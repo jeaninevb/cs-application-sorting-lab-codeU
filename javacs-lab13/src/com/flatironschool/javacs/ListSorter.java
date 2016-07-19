@@ -51,6 +51,10 @@ public class ListSorter<T> {
 		List<T> sorted = mergeSort(list, comparator);
 		list.clear();
 		list.addAll(sorted);
+		
+// 		for(T elt: list){			
+// 			System.out.print(elt + "   ");
+// 		}
 	}
 
 	/**
@@ -63,10 +67,87 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+        
+        List<T> left = new ArrayList<T>();
+		List<T> right = new ArrayList<T>();
+		int center;
+				
+		if(list.size() == 1){
+			return list;
+		}
+		else{
+		
+			center = (list.size())/2;
+			for(int i = 0; i < center; i++){
+			
+				left.add(list.get(i));
+			}
+			for(int j = center; j < list.size(); j++){
+			
+				right.add(list.get(j));
+			}
+			
+			left = mergeSort(left, comparator);
+			right = mergeSort(right, comparator);
+		}
+		
+        merge(left, right, list, comparator);
+        
+        List<T> sortedList = new ArrayList<T>();
+        
+        for(T elt: list){
+        	sortedList.add(elt);
+        }
+        
+        return sortedList;
 	}
-
+	
+	
+	public void merge(List<T> left, List<T> right, List<T> list, Comparator<T> comparator){
+	
+		int leftIndex = 0;
+		int rightIndex = 0;
+		int listIndex = 0;
+		
+		while(leftIndex < left.size() && rightIndex < right.size()){
+		
+			if( comparator.compare(left.get(leftIndex), right.get(rightIndex)) < 0 ){
+				
+				list.set(listIndex, left.get(leftIndex));
+				leftIndex++;
+			}
+			else{
+				list.set(listIndex, right.get(rightIndex));
+				rightIndex++;			
+			}
+			listIndex++;
+		}
+		
+		List<T> rest;
+		int restIndex;
+		if(leftIndex >= left.size()){
+		
+			rest = right;
+			restIndex = rightIndex;
+		}
+		else{
+		
+			rest = left;
+			restIndex = leftIndex;
+		}
+		
+		for(int i = restIndex; i < rest.size(); i++){
+		
+			list.set(listIndex, rest.get(i));
+			listIndex++;
+		}
+		
+		
+// 		for(int i = 0; i < list.size(); i++){
+// 			
+// 			System.out.print(list.get(i) + "   ");
+// 		}
+	} 
 	/**
 	 * Sorts a list using a Comparator object.
 	 * 
@@ -75,8 +156,26 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-	}
+		
+		PriorityQueue<T> queue = new PriorityQueue<T>(list.size(), comparator);
+		List<T> sortedList = new ArrayList<T>();
+		
+		for(T elt: list){
+			queue.offer(elt);
+		}
+		
+		while(queue.peek() != null){
+			
+			sortedList.add(queue.peek());
+			queue.poll();
+		}
+		
+		list.clear();
+		for(T elt: sortedList){
+			list.add(elt);
+		}
+	}	
+	
 
 	
 	/**
@@ -89,8 +188,27 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+	
+		PriorityQueue<T> queue = new PriorityQueue<T>(k, comparator);
+		
+		for(T elt: list){
+			
+			queue.offer(elt);
+			if(queue.size() > k){
+				
+				queue.poll();
+			}
+		}
+		
+		list.clear();
+		
+		while(queue.peek() != null){
+		
+			list.add(queue.peek());
+			queue.poll();
+		}
+		
+        return list;
 	}
 
 	
